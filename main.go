@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -99,20 +100,31 @@ func arabicToInt(arabic string) int {
 }
 
 func intToRoman(num int) string {
-	fmt.Println("Here")
 	romanMap := map[int]string{
-		10: "X",
-		9:  "IX",
-		5:  "V",
-		4:  "IV",
-		1:  "I",
+		100: "C",
+		90:  "XC",
+		50:  "L",
+		40:  "XL",
+		10:  "X",
+		9:   "IX",
+		5:   "V",
+		4:   "IV",
+		1:   "I",
 	}
 
-	var roman string
+	var keys []int
+	for key := range romanMap {
+		keys = append(keys, key)
+	}
 
-	for key, value := range romanMap {
+	sort.Ints(keys)
+
+	var roman string
+	for i := len(keys) - 1; i >= 0; i-- {
+		key := keys[i]
+		symbol := romanMap[key]
 		for num >= key {
-			roman += value
+			roman += symbol
 			num -= key
 		}
 	}
@@ -133,7 +145,6 @@ func main() {
 	a := parts[0]
 	operation := parts[1]
 	b := parts[2]
-
 
 	if is_arabic(a) && is_arabic(b) {
 		result := calculate(arabicToInt(a), operation, arabicToInt(b))
